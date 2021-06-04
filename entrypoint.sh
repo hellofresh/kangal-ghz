@@ -1,4 +1,6 @@
 #!/bin/env sh
+set -e
+
 /bin/ghz "$@"
 
 # Upload Results
