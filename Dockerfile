@@ -1,4 +1,7 @@
 FROM alpine:3.13 AS builder
+
+ARG GHZ_VERSION=latest
+
 RUN apk add --no-cache --upgrade \
   jq~=1.6 \
   curl~=7 \
