@@ -11,7 +11,7 @@ RUN apk add --no-cache --upgrade \
 FROM ubuntu:20.04
 WORKDIR /app
 RUN apt-get update && \
-    apt-get install --no-install-recommends -y ca-certificates
+    apt-get install --no-install-recommends -y ca-certificates curl
 COPY --from=builder /tmp/ghz /bin/ghz
 COPY entrypoint.sh .
 
