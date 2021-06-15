@@ -26,16 +26,11 @@ jobs:
           DEFAULT_BRANCH: master
 
   test:
-    name: Simple Test
+    name: Integration Test
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
         uses: actions/checkout@v2
-
-      - name: Setup Golang
-        uses: actions/setup-go@v2
-        with:
-          go-version: '^1.16'
 
       - name: Build Docker image
         uses: docker/build-push-action@v2
@@ -43,36 +38,29 @@ jobs:
           tags: hellofresh/kangal-ghz:local
           push: false
 
-      - name: Build Test Server
-        run: |
-          cd testdata
-          go mod vendor
-          go build -o greeter_server greeter_server/main.go
+      - name: Build dummy gRPC server Docker image
+        uses: docker/build-push-action@v2
+        with:
+          tags: greeter_server:local
+          file: ./testdata/Dockerfile
+          context: ./testdata
+          push: false
 
-      - name: Test
-        run: |
-          ./testdata/greeter_server/main &
-          docker run --rm -v `pwd`:/app -w /app \
-          --add-host=host.docker.internal:host-gateway \
-          hellofresh/kangal-ghz:local \
-          --insecure \
-          --async \
-          --proto testdata/helloworld/helloworld.proto \
-          --call helloworld.Greeter/SayHello \
-          -n 10 \
-          -d '{"name":"{{.WorkerID}}"}' \
-          host.docker.internal:50051
-          kill $!
+      - name: Setup Kind
+        uses: engineerd/setup-kind@v0.5.0
+        with:
+          version: "v0.11.1"
 
-      - name: Test reflection
+      - name: Set up Helm
+        uses: azure/setup-helm@v1
+        with:
+          version: v3.4.0
+
+      - name: Load docker images into kind cluster
         run: |
-          ./testdata/greeter_server/main --enable-reflection &
-          docker run --rm -v `pwd`:/app -w /app \
-          --add-host=host.docker.internal:host-gateway \
-          hellofresh/kangal-ghz:local \
-          --insecure \
-          --async \
-          --call helloworld.Greeter/SayHello \
-          -n 10 \
-          -d '{"name":"{{.WorkerID}}"}' \
-          host.docker.internal:50051
+          kind load docker-image greeter_server:local
+          kind load docker-image hellofresh/kangal-ghz:local
+      
+      - name: Kangal Integration Tests
+        run: |
+          ./ci/integration-tests.sh
