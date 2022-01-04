@@ -62,5 +62,7 @@ jobs:
           kind load docker-image hellofresh/kangal-ghz:local
       
       - name: Kangal Integration Tests
+        env:
+          SKIP_JMETER_INTEGRATION_TEST: "1"
         run: |
           ./ci/integration-tests.sh
