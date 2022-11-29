@@ -34,10 +34,9 @@ if [ "$REQUEST_COUNT" -eq "0" ]; then
   exit 1
 fi
 
+sleep 15
 kubectl get loadtest
 
-LOADTEST=$(kubectl get loadtest | awk '{print $1;}')
+LOADTEST=$(kubectl get loadtest | grep Ghz | cut -d " " -f1)
 
-curl -X GET "http://${KANGAL_PROXY_ADDRESS}/load-test/${LOADTEST}/logs" \
---header 'Content-Type: application/json'
-
+curl -X GET "http://${KANGAL_PROXY_ADDRESS}/load-test/${LOADTEST}/logs"
