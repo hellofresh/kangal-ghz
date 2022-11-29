@@ -33,3 +33,11 @@ if [ "$REQUEST_COUNT" -eq "0" ]; then
   echo "Expected dummy grpc server to receive >0 request, but found 0. Test failed."
   exit 1
 fi
+
+kubectl get loadtest
+
+LOADTEST=$(kubectl get loadtest | awk '{print $1;}')
+
+curl -X GET "http://${KANGAL_PROXY_ADDRESS}/load-test/${LOADTEST}/logs" \
+--header 'Content-Type: application/json'
+
