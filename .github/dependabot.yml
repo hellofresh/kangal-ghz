@@ -1,0 +1,12 @@
+version: 2
+updates:
+  - package-ecosystem: "gomod"
+    directory: "testdata/"
+    rebase-strategy: "disabled"
+    schedule:
+      interval: "daily"
+    groups:
+      stable-updates:
+        update-types:
+          - "minor"
+          - "patch"
