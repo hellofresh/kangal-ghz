@@ -25,8 +25,8 @@ import (
 	"log"
 	"net"
 
-	"google.golang.org/grpc"
 	pb "github.com/hellofresh/kangal-ghz/testdata/helloworld"
+	"google.golang.org/grpc"
 	"google.golang.org/grpc/reflection"
 )
 
