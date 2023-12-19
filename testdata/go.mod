@@ -3,7 +3,7 @@ module github.com/hellofresh/kangal-ghz/testdata
 go 1.19
 
 require (
-	google.golang.org/grpc v1.59.0
+	google.golang.org/grpc v1.60.1
 	google.golang.org/protobuf v1.31.0
 )
 
