@@ -14,7 +14,9 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
 
       - name: Lint
         uses: github/super-linter@v4
@@ -30,7 +32,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v6
 
       - name: Build Docker image
         uses: docker/build-push-action@v2
@@ -60,7 +62,7 @@ jobs:
         run: |
           kind load docker-image greeter_server:local
           kind load docker-image hellofresh/kangal-ghz:local
-      
+
       - name: Kangal Integration Tests
         run: |
           ./ci/integration-tests.sh
