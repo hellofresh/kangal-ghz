@@ -14,10 +14,12 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
 
       - name: Lint
-        uses: github/super-linter@v4
+        uses: github/super-linter@v5
         env:
           FILTER_REGEX_EXCLUDE: .*testdata/.*
           VALIDATE_ALL_CODEBASE: false
@@ -30,16 +32,16 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v6
 
       - name: Build Docker image
-        uses: docker/build-push-action@v2
+        uses: docker/build-push-action@v6
         with:
           tags: hellofresh/kangal-ghz:local
           push: false
 
       - name: Build dummy gRPC server Docker image
-        uses: docker/build-push-action@v2
+        uses: docker/build-push-action@v6
         with:
           tags: greeter_server:local
           file: ./testdata/Dockerfile
@@ -47,12 +49,12 @@ jobs:
           push: false
 
       - name: Setup Kind
-        uses: engineerd/setup-kind@v0.5.0
+        uses: engineerd/setup-kind@v0.6.2
         with:
           version: "v0.11.1"
 
       - name: Set up Helm
-        uses: azure/setup-helm@v1
+        uses: azure/setup-helm@v4
         with:
           version: v3.4.0
 
@@ -60,7 +62,7 @@ jobs:
         run: |
           kind load docker-image greeter_server:local
           kind load docker-image hellofresh/kangal-ghz:local
-      
+
       - name: Kangal Integration Tests
         run: |
           ./ci/integration-tests.sh
