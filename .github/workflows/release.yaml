@@ -3,7 +3,7 @@ name: Build and release docker images
 on:
   release:
     types:
-      - created
+      - published
 
 permissions:
   contents: read
